@@ -7,17 +7,15 @@ A project that takes morrowind's player heads and shows it on a webpage - [see i
 ## Requirements
 
 - pyFFI
+- PIL / Pillow
 - yarn / npm
 
 # Setup
 
 ```bash
 cd [project]
-
-# Copy textures
-cp [morrowind]/Data\ Files/Textures/TX_B_N_*  ./public/blob/textures
 # Generate JSON meshes
-./script/export_nif.py [morrowind]/Data\ Files/Meshes/b > ./public/blob/meshes.json
+./script/export_nif.py [morrowind]/Data\ Files/Meshes/b [morrowind]/Data\ Files/Textures public/blob
 # Pack JS
 yarn
 yarn webpack

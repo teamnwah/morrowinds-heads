@@ -19,31 +19,41 @@ const nextHair = document.querySelector('#next_hair');
 const prevHead = document.querySelector('#prev_head');
 const nextHead = document.querySelector('#next_head');
 
+const RACES = {
+    'darkelf': 'Dark Elf',
+    'khajiit': 'Khajiit',
+    'woodelf': 'Wood Elf',
+    'highelf': 'High Elf',
+    'redguard': 'Redguard',
+    'breton': 'Breton',
+    'argonian': 'Argonian',
+    'orc': 'Orc',
+    'imperial': 'Imperial',
+    'nord': 'Nord',
+};
 
 window.addEventListener("load", async () => {
-    const allMeshes = await (await fetch("blob/meshes.json")).json();
+    const allMeshes = await (await fetch("blob/meshes.json?v=2")).json();
 
     part1.innerHTML = "";
     part2.innerHTML = "";
     const indexed = window.indexed = {};
     const byName = window.byName = {};
-    const tree = {};
-    const shapeCache = {};
+    const tree = window.tree = {};
 
     headRenderer.init();
     headRenderer.expose();
 
     for (let mesh of allMeshes) {
-        let [_, __, race, gender, part, nr = undefined] = mesh.name.split('_');
-        race = race.replace(new RegExp("\\s+"), ' ');
-
-        if (race === 'DarkElf') {
-            race = 'Dark Elf'
-        }
+        let [_, __, race = "object", gender = "X", part = "head", nr = undefined] = mesh.name.split('_');
+        race = race.replace(new RegExp("\\s+"), '');
+        race = RACES[race] || 'Object';
 
         if (nr === undefined && !['head', 'hair'].includes(part.toLowerCase())) {
-            [_, part, nr] = part.match(/(head|hair)(\d+)?/i) || [];
+            [_, part = "head", nr] = part.match(/(head|hair)(\d+)?/i) || [];
         }
+
+        gender = gender.toUpperCase();
 
         let option = document.createElement("option");
         option.textContent = mesh.name;
@@ -119,7 +129,7 @@ window.addEventListener("load", async () => {
     function collectHashQuery() {
         return location.hash.substr(1).split('&').reduce((c, x) => {
             let [name, value = ""] = x.split('=', 2).map(y => decodeURIComponent(y));
-            c[name] = value;
+            c[name] = value.toLowerCase();
             return c;
         }, {});
     }
@@ -153,7 +163,7 @@ window.addEventListener("load", async () => {
     });
 
     function getShape(name) {
-        return new ShapeCollection(indexed[name], "blob/textures/");
+        return new ShapeCollection(indexed[name], "blob/texture/");
     }
 
     function updateHash() {
@@ -161,6 +171,8 @@ window.addEventListener("load", async () => {
     }
 
     function setHair(id) {
+        if (!id) return;
+
         part1.value = id;
         if (shape1 !== null) {
             headRenderer.remove(shape1);
@@ -184,6 +196,8 @@ window.addEventListener("load", async () => {
     });
 
     function setHead(id) {
+        if (!id) return;
+
         part2.value = id;
         if (shape2 !== null) {
             headRenderer.remove(shape2);

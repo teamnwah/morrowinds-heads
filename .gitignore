@@ -1,5 +1,5 @@
 dist
 node_modules
-public/blob/textures/*
-!public/blob/textures/.gitkeep
+public/blob/texture/*
+!public/blob/texture/.gitkeep
 public/blob/meshes.json
