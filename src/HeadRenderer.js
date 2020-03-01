@@ -17,8 +17,8 @@ export class HeadRenderer {
     this.renderer.setSize(W, H);
     document.body.appendChild(this.renderer.domElement);
 
-    this.camera = new THREE.PerspectiveCamera(70, W / H, 1, 2000);
-    this.camera.position.z = 600;
+    this.camera = new THREE.PerspectiveCamera(70, W / H, 1, 200);
+    this.camera.position.z = 60;
 
     this.scene = new THREE.Scene();
     this.scene.background = new Color(0xffffff);

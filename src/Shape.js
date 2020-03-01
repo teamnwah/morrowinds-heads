@@ -48,7 +48,7 @@ export class Shape {
         const params = {
             color: 0xffffff,
             transparent: true,
-            alphaTest: 0.5,
+            alphaTest: 0.2,
         };
         if (this.textureInfo) {
             let Loader;
@@ -129,7 +129,7 @@ export class Shape {
         geometry.translate(this.translation[0], this.translation[1], this.translation[2]);
 
         // Scale up a bit
-        geometry.scale(20, 20, 20);
+        geometry.scale(2, 2, 2);
 
         // Rotate the face so it faces us \o/
         geometry.rotateX(290 * (Math.PI / 180));

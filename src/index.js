@@ -25,7 +25,8 @@ window.addEventListener("load", async () => {
 
     part1.innerHTML = "";
     part2.innerHTML = "";
-    const indexed = {};
+    const indexed = window.indexed = {};
+    const byName = window.byName = {};
     const tree = {};
     const shapeCache = {};
 
@@ -33,30 +34,22 @@ window.addEventListener("load", async () => {
     headRenderer.expose();
 
     for (let mesh of allMeshes) {
-        let [_, x, race, gender, part, nr = undefined] = mesh.name.split('_');
+        let [_, __, race, gender, part, nr = undefined] = mesh.name.split('_');
         race = race.replace(new RegExp("\\s+"), ' ');
-        if (race.toLowerCase() === "khajiit") {
-            console.log(part, mesh.name, nr);
+
+        if (race === 'DarkElf') {
+            race = 'Dark Elf'
         }
 
-        if (x !== 'N') {
-            continue;
-        }
-
-        if (nr === undefined) {
+        if (nr === undefined && !['head', 'hair'].includes(part.toLowerCase())) {
             [_, part, nr] = part.match(/(head|hair)(\d+)?/i) || [];
-            console.log(part);
-
-            if (!nr) {
-                continue;
-            }
         }
 
         let option = document.createElement("option");
         option.textContent = mesh.name;
         option.value = mesh.id = uuidv4();
         indexed[mesh.id] = mesh;
-
+        byName[mesh.name] = mesh.id;
 
         if (mesh.name.toLowerCase().indexOf("hair") !== -1) {
             part1.appendChild(option);
@@ -89,7 +82,7 @@ window.addEventListener("load", async () => {
         setRace(race.value);
     });
 
-    function setRace(name) {
+    function setRace(name, propagate = true) {
         race.value = name;
         gender.innerHTML = "";
         for (let genderX in tree[name]) {
@@ -99,7 +92,9 @@ window.addEventListener("load", async () => {
             gender.appendChild(option);
         }
 
-        setGender(gender.value)
+        if (propagate) {
+            setGender(gender.value)
+        }
     }
 
     gender.addEventListener("change", () => {
@@ -112,11 +107,57 @@ window.addEventListener("load", async () => {
         setHead(tree[race.value][name]['head'][0]);
     }
 
-    setRace("Dark Elf");
+    // Collect hash query before setting defaults
+    let q = collectHashQuery();
+
+    // Dark Elf / M is what Morrowind starts you with
+    setRace("Dark Elf", false);
     setGender("M");
+
+    updateFromHash(q);
+
+    function collectHashQuery() {
+        return location.hash.substr(1).split('&').reduce((c, x) => {
+            let [name, value = ""] = x.split('=', 2).map(y => decodeURIComponent(y));
+            c[name] = value;
+            return c;
+        }, {});
+    }
+
+    function updateFromHash(q) {
+        if (!q) {
+            q = collectHashQuery();
+        }
+
+        if (byName[q['head']] && q['head'].toLowerCase().includes('head')) {
+            setHead(byName[q['head']]);
+        } else {
+            if (q['head']) {
+                console.log("No head found with name: ", q['head']);
+            }
+        }
+
+        if (byName[q['hair']] && q['hair'].toLowerCase().includes('hair')) {
+            setHair(byName[q['hair']]);
+        } else {
+            if (q['hair']) {
+                console.log("No hair found with name: ", q['hair']);
+            }
+        }
+    }
+
+    updateFromHash();
+
+    window.addEventListener('hashchange', () => {
+        updateFromHash();
+    });
 
     function getShape(name) {
         return new ShapeCollection(indexed[name], "blob/textures/");
+    }
+
+    function updateHash() {
+        location.hash = `head=${encodeURIComponent(indexed[part2.value].name)}&hair=${encodeURIComponent(indexed[part1.value].name)}`;
     }
 
     function setHair(id) {
@@ -125,6 +166,7 @@ window.addEventListener("load", async () => {
             headRenderer.remove(shape1);
         }
         headRenderer.add(shape1 = getShape(id));
+        updateHash();
     }
 
     part1.addEventListener("change", () => {
@@ -147,6 +189,7 @@ window.addEventListener("load", async () => {
             headRenderer.remove(shape2);
         }
         headRenderer.add(shape2 = getShape(id));
+        updateHash();
     }
 
     part2.addEventListener("change", () => {

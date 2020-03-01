@@ -24,3 +24,5 @@ export class ShapeCollection {
         return this.group
     }
 }
+
+window.ShapeCollection = ShapeCollection;
