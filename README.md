@@ -1,9 +1,8 @@
 # Morrowind Three.JS
 
-A project that takes morrowind's player heads and shows it on a webpage
+A project that takes morrowind's player heads and shows it on a webpage - [see it live](https://zt.je/mw/)
 
-![](examples/Z9x9jF6.png)
-![](examples/ZmJe6PQ.png)
+![](examples/Z9x9jF6.png) ![](examples/ZmJe6PQ.png)
 
 ## Requirements
 
