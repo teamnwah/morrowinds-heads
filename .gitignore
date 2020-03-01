@@ -1,0 +1,5 @@
+dist
+node_modules
+public/blob/textures/*
+!public/blob/textures/.gitkeep
+public/blob/meshes.json

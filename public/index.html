@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<style>
+			body {
+				background-color: #ffffff;
+				margin: 0;
+				overflow: hidden;
+				box-sizing: border-box;
+			}
+
+			.overlay {
+				position: absolute;
+				margin: 25px;
+			}
+
+			.wizard {
+				position: absolute;
+				padding: 25px;
+				width: 100%;
+				bottom: 0;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="overlay">
+			<div class="part-1">
+				<label for="part_1">Hair:</label>
+				<select id="part_1">
+					<option>Loading...</option>
+				</select>
+			</div>
+			<div class="part-2">
+				<label for="part_2">Head:</label>
+				<select id="part_2">
+					<option>Loading...</option>
+				</select>
+			</div>
+		</div>
+
+		<div class="wizard">
+			<div class="race">
+				<label for="race">Race: </label>
+				<select name="race" id="race">
+					<option>Loading...</option>
+				</select>
+			</div>
+			<div class="gender">
+				<label for="gender">Gender: </label>
+				<select name="gender" id="gender">
+					<option>Loading...</option>
+				</select>
+			</div>
+			<div class="hair">
+				<button id="prev_hair"><</button>
+				Hair
+				<button id="next_hair">></button>
+			</div>
+			<div class="head">
+				<button id="prev_head"><</button>
+				Head
+				<button id="next_head">></button>
+			</div>
+		</div>
+
+		<script src="js/dist/bundle.js"></script>
+	</body>
+</html>
